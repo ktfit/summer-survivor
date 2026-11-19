@@ -1,0 +1,688 @@
+<!doctype html><html lang="en-AU"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0e5a6b"><style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Summer Survivor Series</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: a phone-first app shell. Sticky header, one column of cards, bottom tab bar. Patrol-flag red and yellow on sand and ocean. */
+:root{
+  --sand:#f6f1e7; --surface:#fffdf8; --line:#e4dccb; --ink:#14232b; --muted:#5b6b70;
+  --ocean:#0e5a6b; --ocean-soft:#d7eaec; --flag-red:#d33a2c; --flag-yellow:#f4c21b;
+  --good:#1f7a4d; --good-soft:#dcefe3; --warn:#9a6a00; --warn-soft:#fbefc9; --bad:#b3261e; --bad-soft:#f8dcd8;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sand:#0d171b; --surface:#152329; --line:#253840; --ink:#eef3f1; --muted:#9db0b4;
+  --ocean:#5cc0cf; --ocean-soft:#16343b; --flag-red:#ff6a5a; --flag-yellow:#f7cd3f;
+  --good:#6fd39b; --good-soft:#163527; --warn:#f2c661; --warn-soft:#3a3016; --bad:#ff8a80; --bad-soft:#3d1c1a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sand:#0d171b; --surface:#152329; --line:#253840; --ink:#eef3f1; --muted:#9db0b4;
+  --ocean:#5cc0cf; --ocean-soft:#16343b; --flag-red:#ff6a5a; --flag-yellow:#f7cd3f;
+  --good:#6fd39b; --good-soft:#163527; --warn:#f2c661; --warn-soft:#3a3016; --bad:#ff8a80; --bad-soft:#3d1c1a; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--sand);color:var(--ink)}
+body{font-family:var(--body);font-size:16px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sand)}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;letter-spacing:.02em;margin:0;text-wrap:balance;line-height:1.05}
+h1{font-size:2.4rem;font-weight:800}
+h2{font-size:1.5rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.eyebrow{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:.8rem;color:var(--ocean)}
+.num{font-variant-numeric:tabular-nums}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sand);padding-block:12px 10px;margin:0 auto;max-width:560px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.flag{width:26px;height:20px;flex:none;border-radius:2px;background:linear-gradient(to bottom,var(--flag-red) 0 50%,var(--flag-yellow) 50% 100%)}
+.brand{font-family:var(--display);font-weight:800;font-size:1.25rem;text-transform:uppercase;letter-spacing:.03em}
+.brand small{display:block;font-family:var(--body);font-weight:500;font-size:.75rem;text-transform:none;letter-spacing:0;color:var(--muted)}
+.top .spacer{flex:1}
+.linkbtn{background:none;border:0;color:var(--ocean);font:600 .9rem var(--body);cursor:pointer;padding:6px 4px}
+.demo{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:.85rem}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.hero{background:var(--ocean);color:#fff;border:0;position:relative;overflow:hidden}
+.hero .eyebrow{color:var(--flag-yellow)}
+.hero p{color:#e6f2f3}
+.hero::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:var(--flag-yellow);opacity:.18}
+
+label{font-weight:600;font-size:.9rem;display:flex;flex-direction:column;gap:6px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--sand);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--flag-yellow);outline-offset:2px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{padding:12px;border-radius:10px;border:1.5px solid var(--line);background:var(--sand);color:var(--ink);font:700 1rem var(--display);text-transform:uppercase;letter-spacing:.04em;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--ocean);background:var(--ocean-soft);color:var(--ocean)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:12px;border:0;background:var(--flag-red);color:#fff;font:700 1.05rem var(--display);text-transform:uppercase;letter-spacing:.05em;cursor:pointer;width:100%}
+.btn.secondary{background:var(--ocean-soft);color:var(--ocean)}
+.btn.ghost{background:transparent;color:var(--ocean);border:1.5px solid var(--line)}
+.btn.sm{width:auto;padding:8px 12px;font-size:.9rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row > *{min-width:0}
+.err{color:var(--bad);font-size:.9rem}
+
+/* progress */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--sand);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-family:var(--display);font-size:1.9rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--flag-red);border-radius:99px}
+.weeks{display:grid;grid-template-columns:repeat(9,1fr);gap:4px}
+.wk{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.7rem;color:var(--muted);font-weight:600}
+.wk .dots{display:flex;flex-direction:column-reverse;gap:3px}
+.wk .dot{width:14px;height:14px;border-radius:4px;background:var(--line)}
+.wk .dot.on{background:var(--ocean)}
+.wk.hit .dot.on{background:var(--good)}
+.wk.now{color:var(--ink)}
+.wk.now .lbl{background:var(--flag-yellow);color:#14232b;border-radius:4px;padding:0 4px}
+.thisweek{display:flex;gap:10px;align-items:center}
+.thisweek .pips{display:flex;gap:6px}
+.pip{width:34px;height:34px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-weight:700;color:var(--muted)}
+.pip.on{border:0;background:var(--good);color:#fff}
+
+/* missions grid */
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{position:relative;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 8px;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.tile .t{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:.95rem;line-height:1.05}
+.tile .s{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.tile.approved{background:var(--good-soft);border-color:var(--good)}
+.tile.approved .s{color:var(--good)}
+.tile.pending{background:var(--warn-soft);border-color:var(--warn)}
+.tile.pending .s{color:var(--warn)}
+.tile.rejected .s{color:var(--bad)}
+.tile .n{position:absolute;top:6px;right:8px;font-family:var(--display);font-weight:800;color:var(--muted);font-size:.85rem}
+.tile .s.open{color:var(--muted)}
+
+.pill{display:inline-block;border-radius:99px;padding:2px 10px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.info{background:var(--ocean-soft);color:var(--ocean)}
+
+.list{display:flex;flex-direction:column}
+.li{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}
+.li .grow{flex:1;min-width:0}
+.thumb{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:none;background:var(--line)}
+.photo{width:100%;max-height:360px;object-fit:cover;border-radius:12px;background:var(--line)}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:16px;text-align:center;color:var(--muted);cursor:pointer;display:block;font-weight:500}
+.drop input{display:none}
+
+.workout ol{margin:0;padding-left:1.2rem;display:flex;flex-direction:column;gap:4px}
+details.workout{border-top:1px solid var(--line);padding-top:10px}
+details.workout summary{cursor:pointer;font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:1.15rem;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.workout summary::after{content:"+";color:var(--ocean);font-size:1.4rem}
+details.workout[open] summary::after{content:"–"}
+details.workout .inner{display:flex;flex-direction:column;gap:10px;padding-block:10px}
+
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--display);text-transform:uppercase;letter-spacing:.05em;font-size:.8rem;color:var(--muted)}
+td.num,th.num{text-align:right}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav.tabs button{background:none;border:0;padding:10px 4px 12px;font:700 .85rem var(--display);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-current="page"]{color:var(--flag-red)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--sand);padding:10px 16px;border-radius:99px;font-weight:600;z-index:20;max-width:90vw}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px max(16px,env(safe-area-inset-left,0px)) calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+@media (prefers-reduced-motion:no-preference){.card{animation:rise .25s ease-out both}@keyframes rise{from{transform:translateY(6px)}to{transform:none}}}
+</style>
+
+<header class="top">
+  <div class="flag" aria-hidden="true"></div>
+  <div class="brand">Summer Survivor<small id="hdrSub">KT Fitness · 9 weeks · 3 sessions a week</small></div>
+  <div class="spacer"></div>
+  <button class="linkbtn" id="hdrBtn" type="button"></button>
+</header>
+<main class="wrap" id="app"></main>
+<nav class="tabs" id="tabs" hidden><div class="in"></div></nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script>
+/* ---------------- Series setup (Katie: change these) ---------------- */
+const SERIES = {
+  start: '2026-11-30',          // Monday of week 1
+  weeks: 9,
+  perWeek: 3,
+  teeTarget: 27,
+  coachPin: '1234',             // demo only; the live app uses a real coach login
+  prize: 'a half-day retreat: sauna, ice bath and massage'
+};
+/* ---------------- Live connection (filled in for the real app) ----------------
+   Leave these blank and the app runs as a preview with example data on this device. */
+const CONFIG = {
+  supabaseUrl: 'https://tjjjjfaafwoxhsxjrmky.supabase.co',
+  supabaseAnonKey: 'sb_publishable_ryWBq0dW0s15qp6wG0ZPZw_57RmX-dX'
+};
+const PROOF_IN_WHATSAPP = false; // proof photos are uploaded in the app (and can be shared in WhatsApp too)
+const DEMO = !CONFIG.supabaseUrl;
+const DEMO_TODAY = '2026-12-16';// preview pretends it is week 3
+
+const CHALLENGES = {
+  // Missions 1 to 9, any order, one a week. Same numbering as the challenge cards.
+  gym: [
+    ['Bring a friend to a class','Bring a friend along to any class. Photo of you both.'],
+    ['100 burpees','All in one day. Split them up however you like.'],
+    ['30-minute beach walk then a swim','Walk the sand for 30 minutes, then cool off with a swim. Snap the view or a sandy selfie.'],
+    ['100 sit-ups','All in one day. Split them up however you like.'],
+    ['Swim 1 full lap of the shark nets','One full lap of the netted swim enclosure.'],
+    ['100 push-ups','All in one day. Knees are fine.'],
+    ['100 squats or lunges','All in one day. Split them up however you like.'],
+    ['Hold a 2-minute plank','One unbroken 2:00 plank. Photo of you or the timer.'],
+    ['Try a new class','Pick a class you haven\u2019t done before.']
+  ],
+  pilates: [
+    ['Bring a friend to a class','Bring a friend along to any class. Photo of you both.'],
+    ['Perform \u201cHundreds\u201d in a class','Do the Hundreds in one of your classes. Ask your instructor or a classmate to snap a photo.'],
+    ['30-minute beach walk then a swim','Walk the sand for 30 minutes, then cool off with a swim. Snap the view or a sandy selfie.'],
+    ['10 Teasers','10 controlled Teasers. Get someone to snap you at the top.'],
+    ['Swim 1 full lap of the shark nets','One full lap of the netted swim enclosure.'],
+    ['100 ab prep crunches','All in one day. Split them up however you like.'],
+    ['100 squats or lunges','All in one day. Split them up however you like.'],
+    ['Hold a 2-minute plank','One unbroken 2:00 plank. Photo of you or the timer.'],
+    ['Try a new class','Pick a class you haven\u2019t done before.']
+  ]
+};
+
+const SESSION_KINDS = [
+  ['studio','Class at the studio',false],
+  ['online','Online / remote class',false],
+  ['upper','Holiday workout: Upper body',true],
+  ['lower','Holiday workout: Lower body',true],
+  ['full','Holiday workout: Full body',true],
+  ['other','Other training (run, swim, surf)',true]
+];
+
+const WORKOUTS = [
+  ['upper','Upper body','About 25 minutes. 3 rounds, 45 seconds rest between rounds. A chair, step or esky is all you need.',
+    ['10 push-ups (knees are fine)','12 tricep dips off a chair or esky','10 pike push-ups','30 sec plank shoulder taps','12 superman pulls','20 sec arm circles each way']],
+  ['lower','Lower body','About 25 minutes. 4 rounds, 45 seconds rest between rounds. Great on the sand.',
+    ['20 bodyweight squats','12 reverse lunges each leg','15 glute bridges (hold 2 sec at the top)','30 sec wall sit or squat hold','20 calf raises','10 jump squats or squat pulses']],
+  ['full','Full body','20-minute AMRAP: as many rounds as you can in 20 minutes. Write your rounds in the note.',
+    ['10 burpees','15 squats','10 push-ups','20 mountain climbers','10 sit-ups (Pilates: 10 ab prep crunches)']]
+];
+
+/* ---------------- Dates ---------------- */
+const DAY = 86400000;
+const parseD = s => { const [y,m,d] = s.split('-').map(Number); return Date.UTC(y,m-1,d); };
+const fmtISO = t => new Date(t).toISOString().slice(0,10);
+const todayISO = () => DEMO ? DEMO_TODAY : (()=>{const n=new Date();return fmtISO(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()));})();
+const weekOf = iso => { const w = Math.floor((parseD(iso)-parseD(SERIES.start))/DAY/7)+1; return w; };
+const nice = iso => new Date(parseD(iso)).toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:'UTC'});
+const weekRange = w => { const s=parseD(SERIES.start)+(w-1)*7*DAY; return nice(fmtISO(s))+' to '+nice(fmtISO(s+6*DAY)); };
+const lastDay = () => fmtISO(parseD(SERIES.start)+(SERIES.weeks*7-1)*DAY);
+const earliestLog = () => { const cw=Math.min(Math.max(weekOf(todayISO()),1),SERIES.weeks); const ws=parseD(SERIES.start)+(cw-1)*7*DAY; const into=(parseD(todayISO())-ws)/DAY; const from=(into<2&&cw>1)?ws-7*DAY:ws; return fmtISO(from); };
+const curWeek = () => Math.min(Math.max(weekOf(todayISO()),0),SERIES.weeks+1);
+
+/* ---------------- Storage (demo: this device only) ---------------- */
+const KEY='ss_demo_v3';
+let DB;
+function load(){ try{ DB = JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){ DB=null; } if(!DB){ DB={members:[],sessions:[],missions:[],me:null,coach:false}; seed(); } DB.isCoach=true; }
+function save(){ if(!DEMO) return; try{ localStorage.setItem(KEY,JSON.stringify(DB)); }catch(e){ toast('Could not save on this device (storage full or blocked).'); } }
+
+/* ---------------- Live data (Supabase) ---------------- */
+let SB=null, AUTH_EMAIL='';
+const dataUrlToBlob = d => { const [h,b]=d.split(','); const bin=atob(b); const a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) a[i]=bin.charCodeAt(i); return new Blob([a],{type:(h.match(/:(.*?);/)||[])[1]||'image/jpeg'}); };
+const mapMember = r => ({id:r.id,name:r.name,email:r.email,phone:r.phone||'',track:r.track,silver:!!r.silver,joined:r.joined});
+const mapSession = r => ({id:r.id,member:r.member_id,date:r.date,kind:r.kind,note:r.note||'',photoPath:r.photo_path||'',photo:''});
+const mapMission = r => ({id:r.id,member:r.member_id,idx:r.idx,week:r.week,note:r.note||'',status:r.status,reply:r.reply||'',at:r.at,photoPath:r.photo_path||'',photo:''});
+async function signPhotos(list){
+  const paths=list.filter(x=>x.photoPath).map(x=>x.photoPath);
+  if(!paths.length) return;
+  const {data,error}=await SB.storage.from('proof').createSignedUrls(paths,60*60*6);
+  if(error||!data) return;
+  const byPath={}; data.forEach(d=>{ if(d.signedUrl) byPath[d.path]=d.signedUrl; });
+  list.forEach(x=>{ if(x.photoPath&&byPath[x.photoPath]) x.photo=byPath[x.photoPath]; });
+}
+async function uploadPhoto(dataUrl){
+  if(!dataUrl) return '';
+  const path=`${DB.me}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.jpg`;
+  const {error}=await SB.storage.from('proof').upload(path,dataUrlToBlob(dataUrl),{contentType:'image/jpeg'});
+  if(error) throw new Error('Your photo didn\u2019t upload. Check your connection and try again.');
+  return path;
+}
+async function liveBoot(){
+  $('#app').innerHTML='<section class="card"><p class="muted">Loading your Summer Survivor progress\u2026</p></section>';
+  const {data:{session}}=await SB.auth.getSession();
+  if(!session){ DB={members:[],sessions:[],missions:[],me:null,coach:false,isCoach:false}; render(); return; }
+  AUTH_EMAIL=session.user.email||'';
+  const uidNow=session.user.id;
+  const [co,mm,ss,ms]=await Promise.all([
+    SB.rpc('is_coach'),
+    SB.from('members').select('*'),
+    SB.from('sessions').select('*'),
+    SB.from('missions').select('*')
+  ]);
+  const err=[mm,ss,ms].find(x=>x.error);
+  if(err){ $('#app').innerHTML=`<section class="card"><h2>Can\u2019t load right now</h2><p class="muted">Check your internet connection, then reload the page.</p><button class="btn" type="button" onclick="location.reload()">Reload</button></section>`; return; }
+  DB={members:mm.data.map(mapMember),sessions:ss.data.map(mapSession),missions:ms.data.map(mapMission),me:uidNow,coach:DB&&DB.coach&&!!co.data,isCoach:!!co.data};
+  await signPhotos([...DB.sessions,...DB.missions]);
+  render();
+}
+/* Every change goes through here, so the preview and the live app behave the same. */
+const store = {
+  async join(p){
+    if(DEMO){ let m=DB.members.find(x=>x.email===p.email); if(!m){ m={id:uid(),joined:todayISO(),...p}; DB.members.push(m);} DB.me=m.id; save(); return; }
+    const {error}=await SB.from('members').insert({id:DB.me,name:p.name,email:AUTH_EMAIL||p.email,phone:p.phone,track:p.track,silver:p.silver,joined:todayISO()});
+    if(error) throw new Error('We couldn\u2019t save your details. Try again in a moment.');
+    DB.members.push({id:DB.me,joined:todayISO(),...p,email:AUTH_EMAIL||p.email});
+  },
+  async addSession(x){
+    if(DEMO){ DB.sessions.push({id:uid(),member:DB.me,...x}); save(); return; }
+    const path=await uploadPhoto(x.photo);
+    const {data,error}=await SB.from('sessions').insert({member_id:DB.me,date:x.date,kind:x.kind,note:x.note,photo_path:path||null}).select().single();
+    if(error) throw new Error('That session didn\u2019t save. Check your connection and try again.');
+    DB.sessions.push({...mapSession(data),photo:x.photo});
+  },
+  async delSession(id){
+    if(!DEMO){ const {error}=await SB.from('sessions').delete().eq('id',id); if(error) throw new Error('Couldn\u2019t remove that session. Try again.'); }
+    DB.sessions=DB.sessions.filter(s=>s.id!==id); save();
+  },
+  async addMission(x){
+    if(DEMO){ DB.missions.push({id:uid(),member:DB.me,status:'pending',at:new Date().toISOString(),...x}); save(); return; }
+    const path=await uploadPhoto(x.photo);
+    const {data,error}=await SB.from('missions').insert({member_id:DB.me,idx:x.idx,week:x.week,note:x.note,photo_path:path||null}).select().single();
+    if(error) throw new Error('Your mission didn\u2019t send. Check your connection and try again.');
+    DB.missions.push({...mapMission(data),photo:x.photo});
+  },
+  async review(id,status,reply){
+    if(!DEMO){ const {error}=await SB.from('missions').update({status,reply}).eq('id',id); if(error) throw new Error('That didn\u2019t save. Try again.'); }
+    const x=DB.missions.find(y=>y.id===id); if(x){ x.status=status; x.reply=reply; } save();
+  },
+  async setSilver(id,val){
+    if(!DEMO){ const {error}=await SB.from('members').update({silver:val}).eq('id',id); if(error) throw new Error('That didn\u2019t save. Try again.'); }
+    const m=DB.members.find(x=>x.id===id); if(m) m.silver=val; save();
+  },
+  async signOut(){
+    if(DEMO){ DB.me=null; DB.coach=false; save(); render(); return; }
+    await SB.auth.signOut(); location.reload();
+  }
+};
+/* Runs an async change with a busy button and a friendly error. */
+async function act(btn,fn){
+  if(btn){ btn.disabled=true; btn.dataset.label=btn.textContent; btn.textContent='Saving\u2026'; }
+  try{ await fn(); return true; }
+  catch(e){ toast(e.message||'Something went wrong. Try again.'); return false; }
+  finally{ if(btn&&btn.isConnected){ btn.disabled=false; btn.textContent=btn.dataset.label; } }
+}
+const uid = () => Math.random().toString(36).slice(2,10);
+
+function placeholder(label,hue){
+  const c=document.createElement('canvas'); c.width=480; c.height=360; const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,360); gr.addColorStop(0,`hsl(${hue},55%,62%)`); gr.addColorStop(1,`hsl(${hue+30},45%,38%)`);
+  g.fillStyle=gr; g.fillRect(0,0,480,360); g.fillStyle='rgba(255,255,255,.9)'; g.font='bold 30px sans-serif'; g.textAlign='center';
+  g.fillText(label,240,170); g.font='18px sans-serif'; g.fillText('example photo',240,205);
+  try{ return c.toDataURL('image/jpeg',.7);}catch(e){return '';}
+}
+function seed(){
+  // Example members so the coach view has something to show. Clearly marked as examples.
+  const ex=[['Sam (example)','gym',8,[0,1,4],true],['Priya (example)','pilates',10,[1,5],true],['Josh (example)','gym',4,[0],true],['Mel (example)','pilates',6,[],false]];
+  const t=todayISO();
+  ex.forEach(([name,track,n,done,silver],i)=>{
+    const id=uid(); DB.members.push({id,name,email:name.split(' ')[0].toLowerCase()+'@example.com',phone:'',track,silver,joined:SERIES.start,example:true});
+    for(let k=0;k<n;k++){ const d=fmtISO(parseD(SERIES.start)+Math.floor(k*16/n)*DAY); if(d<=t) DB.sessions.push({id:uid(),member:id,date:d,kind:k%4?'studio':'online',note:''}); }
+    done.forEach((ci,j)=>DB.missions.push({id:uid(),member:id,idx:ci,week:j+1,photo:'',note:'',status:'approved',at:SERIES.start}));
+  });
+  const p=DB.members[2]; DB.missions.push({id:uid(),member:p.id,idx:1,week:3,photo:placeholder('Beach walk',190),note:'Bondi to Bronte and back!',status:'pending',at:t});
+  const q=DB.members[3]; DB.missions.push({id:uid(),member:q.id,idx:4,week:3,photo:placeholder('2:00 plank',30),note:'Shaking at the end but did it',status:'pending',at:t});
+  save();
+}
+
+/* ---------------- Derived numbers ---------------- */
+function statsFor(mid){
+  const ss=DB.sessions.filter(s=>s.member===mid);
+  const byWeek=Array(SERIES.weeks+1).fill(0);
+  ss.forEach(s=>{const w=weekOf(s.date); if(w>=1&&w<=SERIES.weeks) byWeek[w]++;});
+  // No rollover: only 3 sessions per week count toward the 27. Extras earn bonus points instead.
+  const total=byWeek.reduce((a,n,i)=>a+(i>0?Math.min(n,SERIES.perWeek):0),0);
+  const cw=curWeek();
+  const missed=byWeek.map((n,i)=>i).filter(i=>i>0&&i<cw&&i<=SERIES.weeks&&byWeek[i]<SERIES.perWeek);
+  const weeksHit=byWeek.filter((n,i)=>i>0&&n>=SERIES.perWeek).length;
+  const ms=DB.missions.filter(m=>m.member===mid);
+  const missionPts=ms.filter(m=>m.status==='approved').length;
+  const extraPts=byWeek.reduce((a,n,i)=>a+(i>0?Math.max(0,n-SERIES.perWeek):0),0);
+  const points=missionPts+extraPts;
+  const pending=ms.filter(m=>m.status==='pending').length;
+  const mem=DB.members.find(x=>x.id===mid)||{};
+  const tee=total>=SERIES.teeTarget, qualifies=tee&&!!mem.silver;
+  return {ss,byWeek,total,missed,weeksHit,ms,missionPts,extraPts,points,pending,tee,silver:!!mem.silver,qualifies,entries:qualifies?1+points:0};
+}
+
+/* ---------------- UI helpers ---------------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT; function toast(msg){ let t=$('.toast'); if(!t){t=document.createElement('div');t.className='toast';t.setAttribute('role','status');document.body.appendChild(t);} t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,2600); }
+function sheet(html,onMount){ const bg=document.createElement('div'); bg.className='sheet-bg'; bg.innerHTML=`<div class="sheet" role="dialog" aria-modal="true">${html}</div>`; bg.addEventListener('click',e=>{if(e.target===bg)bg.remove();}); document.body.appendChild(bg); onMount&&onMount(bg.firstElementChild,()=>bg.remove()); }
+function readPhoto(file){ return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>{ const img=new Image(); img.onload=()=>{ const max=900,sc=Math.min(1,max/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',.72)); }; img.onerror=()=>rej(new Error('That file is not a photo we can read. Try a JPG or PNG.')); img.src=fr.result; }; fr.onerror=()=>rej(new Error('Could not read that file.')); fr.readAsDataURL(file); }); }
+const me=()=>DB.members.find(m=>m.id===DB.me);
+
+const ICONS={
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+  log:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+  missions:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M15 17.5l2 2 4-4"/></svg>',
+  workouts:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg>'
+};
+let TAB='home';
+function setTab(t){ TAB=t; render(); window.scrollTo(0,0); }
+
+/* ---------------- Screens ---------------- */
+function render(){
+  const app=$('#app'), tabs=$('#tabs'), hb=$('#hdrBtn');
+  hb.hidden = !DEMO && !DB.isCoach;
+  if(DB.coach){ hb.textContent=me()?'Exit coach':'Sign out'; hb.onclick=()=>{ if(me()){DB.coach=false;save();render();} else store.signOut(); }; tabs.hidden=true; app.innerHTML=coachView(); bindCoach(); return; }
+  if(!DEMO && !DB.me){ hb.hidden=true; tabs.hidden=true; app.innerHTML=loginView(); bindLogin(); return; }
+  if(!me()){ hb.textContent='Coach'; hb.onclick=coachLogin; tabs.hidden=true; app.innerHTML=signupView(); bindSignup(); return; }
+  hb.textContent='Coach'; hb.onclick=coachLogin;
+  tabs.hidden=false;
+  tabs.firstElementChild.innerHTML=[['home','Home'],['log','Log'],['missions','Missions'],['workouts','Workouts']].map(([k,l])=>`<button type="button" data-tab="${k}" ${TAB===k?'aria-current="page"':''}>${ICONS[k]}${l}</button>`).join('');
+  tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+  app.innerHTML=(DEMO?`<div class="demo">Preview: entries are saved on this device only, and the app is pretending today is ${nice(DEMO_TODAY)} (week ${curWeek()}).</div>`:'')+({home:homeView,log:logView,missions:missionsView,workouts:workoutsView}[TAB])();
+  ({home:bindHome,log:bindLog,missions:bindMissions,workouts:bindWorkouts}[TAB])();
+}
+
+function signupView(){
+  return `
+  <section class="card hero">
+    <span class="eyebrow">${weekRange(1).split(' to ')[0]} to ${nice(lastDay())}</span>
+    <h1>Summer Survivor Series</h1>
+    <p>Train 3 times a week for 9 weeks. Keep your strength, keep your fitness and enjoy the silly season guilt free.</p>
+  </section>
+  <section class="card">
+    <h2>What's involved</h2>
+    <div class="list">
+      <div class="li"><div class="grow"><b>3 sessions every week</b><p class="muted small">Studio classes, online classes or our holiday workouts while you're away. Sessions don't roll over to the next week. Can't make class? Do a home workout that week instead.</p></div></div>
+      <div class="li"><div class="grow"><b>Bonus points</b><p class="muted small">Earn 1 point for each weekly mission you upload, and 1 point for every session over 3 in a week.</p></div></div>
+      <div class="li"><div class="grow"><b>27 sessions = Survivor Tee</b><p class="muted small">Plus an entry into the draw for ${esc(SERIES.prize)}. Every bonus point is an extra entry. Silver membership or above needed to qualify.</p></div></div>
+    </div>
+  </section>
+  <form class="card" id="signup" novalidate>
+    <h2>Sign me up</h2>
+    <label>Your name<input id="su-name" autocomplete="name" required placeholder="First and last name"></label>
+    ${DEMO?'<label>Email<input id="su-email" type="email" autocomplete="email" required placeholder="you@email.com"></label>':`<p class="small muted">Signed in as ${esc(AUTH_EMAIL)}</p>`}
+    <label>Mobile<input id="su-phone" type="tel" autocomplete="tel" placeholder="04xx xxx xxx"></label>
+    <div><p style="font-weight:600;font-size:.9rem;margin-bottom:6px">Which program?</p>
+      <div class="seg" id="su-track"><button type="button" data-v="gym" aria-pressed="true">Gym</button><button type="button" data-v="pilates" aria-pressed="false">Pilates</button></div></div>
+    <label>Your membership<select id="su-mem"><option value="">Choose one</option><option value="silver">Silver or above</option><option value="other">Below Silver / not sure</option></select></label>
+    <p class="small muted">You need a Silver membership or above to win the Tee and enter the prize draw. Anyone can still join in and track their training.</p>
+    <p class="err" id="su-err" hidden></p>
+    <button class="btn" type="submit">Join the series</button>
+    ${DEMO?'<button class="btn ghost" type="button" id="su-example">Look around as Sam (example member)</button>':''}
+  </form>`;
+}
+function bindSignup(){
+  let track='gym';
+  document.querySelectorAll('#su-track button').forEach(b=>b.onclick=()=>{track=b.dataset.v;document.querySelectorAll('#su-track button').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+  $('#signup').onsubmit=async e=>{
+    e.preventDefault();
+    const name=$('#su-name').value.trim(), email=DEMO?$('#su-email').value.trim().toLowerCase():AUTH_EMAIL, phone=$('#su-phone').value.trim(), err=$('#su-err');
+    if(!name){err.textContent='Add your name so we know who you are.';err.hidden=false;return;}
+    if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent='That email doesn’t look right. Check for typos.';err.hidden=false;return;}
+    const mem=$('#su-mem').value;
+    if(!mem){err.textContent='Choose your membership so we know if you can enter the draw.';err.hidden=false;return;}
+    const ok=await act(e.submitter||$('#signup button[type=submit]'),()=>store.join({name,email,phone,track,silver:mem==='silver'}));
+    if(!ok) return;
+    TAB='home'; render(); toast(`Welcome to the series, ${name.split(' ')[0]}!`);
+  };
+  const ex=$('#su-example'); if(ex) ex.onclick=()=>{ DB.me=DB.members.find(m=>m.example).id; save(); render(); };
+}
+
+/* Live app: log in or create an account (email and password, so no emails are needed). */
+let LOGIN_MODE='join';
+function loginView(){
+  return `
+  <section class="card hero">
+    <span class="eyebrow">${nice(SERIES.start)} to ${nice(lastDay())}</span>
+    <h1>Summer Survivor Series</h1>
+    <p>Log your sessions, tick off your missions and watch your draw entries grow.</p>
+  </section>
+  <form class="card" id="loginf" novalidate>
+    <div class="seg" id="lg-mode"><button type="button" data-v="join" aria-pressed="${LOGIN_MODE==='join'}">I'm new</button><button type="button" data-v="login" aria-pressed="${LOGIN_MODE==='login'}">Log in</button></div>
+    <label>Email<input id="li-email" type="email" autocomplete="email" required placeholder="The email you signed up with"></label>
+    <label>Password<input id="li-pass" type="password" autocomplete="${LOGIN_MODE==='join'?'new-password':'current-password'}" required placeholder="${LOGIN_MODE==='join'?'At least 6 characters':'Your password'}"></label>
+    <p class="err" id="li-err" hidden></p>
+    <button class="btn" type="submit">${LOGIN_MODE==='join'?'Create my account':'Log in'}</button>
+    <p class="small muted">${LOGIN_MODE==='join'?'You only do this once. Your phone remembers you after that.':'<button class="linkbtn small" type="button" id="li-forgot">Forgot your password?</button>'}</p>
+  </form>`;
+}
+function bindLogin(){
+  document.querySelectorAll('#lg-mode button').forEach(b=>b.onclick=()=>{LOGIN_MODE=b.dataset.v;render();});
+  const fg=$('#li-forgot'); if(fg) fg.onclick=async()=>{
+    const email=$('#li-email').value.trim().toLowerCase(), err=$('#li-err');
+    if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent='Type your email above first, then tap Forgot your password.';err.hidden=false;return;}
+    const {error}=await SB.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+    err.textContent=error?'We couldn\u2019t send the email right now. Try again in an hour, or ask the KT Fitness team.':'Check your email for a link to set a new password.'; err.hidden=false;
+  };
+  $('#loginf').onsubmit=async e=>{
+    e.preventDefault();
+    const email=$('#li-email').value.trim().toLowerCase(), password=$('#li-pass').value, err=$('#li-err'); err.hidden=true;
+    if(!/^\S+@\S+\.\S+$/.test(email)){err.textContent='That email doesn\u2019t look right. Check for typos.';err.hidden=false;return;}
+    if(password.length<6){err.textContent='Passwords need at least 6 characters.';err.hidden=false;return;}
+    const btn=$('#loginf button[type=submit]'); btn.disabled=true;
+    const res = LOGIN_MODE==='join' ? await SB.auth.signUp({email,password}) : await SB.auth.signInWithPassword({email,password});
+    btn.disabled=false;
+    if(res.error){
+      const m=res.error.message||'';
+      err.textContent = /already registered/i.test(m)?'You already have an account. Tap Log in instead.'
+        : /invalid login/i.test(m)?'That email and password don\u2019t match. Try again, or tap I\u2019m new if this is your first time.'
+        : 'That didn\u2019t work: '+m;
+      err.hidden=false; return;
+    }
+    if(!res.data.session){ err.textContent='Check your email to confirm your account, then come back and log in.'; err.hidden=false; return; }
+    liveBoot();
+  };
+}
+
+function homeView(){
+  const m=me(), st=statsFor(m.id), w=curWeek();
+  const thisWk = (w>=1&&w<=SERIES.weeks)?st.byWeek[w]:0;
+  const pct=Math.min(100,Math.round(st.total/SERIES.teeTarget*100));
+  const weekMission = st.ms.find(x=>x.week===w && x.status!=='rejected');
+  let status;
+  if(w<1) status=`<p>The series starts ${nice(SERIES.start)}. Get your first 3 sessions booked in.</p>`;
+  else if(w>SERIES.weeks) status=`<p>The series is over. ${st.tee?'You earned your Survivor Tee!':'Thanks for training with us this summer.'}</p>`;
+  else status=`<div class="thisweek"><div class="pips">${[1,2,3].map(i=>`<div class="pip ${thisWk>=i?'on':''}">${thisWk>=i?'✓':i}</div>`).join('')}</div>
+    <p>${thisWk>SERIES.perWeek?`<b>Week done</b> plus ${thisWk-SERIES.perWeek} bonus ${thisWk-SERIES.perWeek===1?'point':'points'}.`:thisWk===SERIES.perWeek?'<b>Week done.</b> Every extra session is a bonus point.':`<b>${SERIES.perWeek-thisWk} to go</b> this week. Sessions don't roll over, so if you can't get to class, a home workout counts.`}</p></div>`;
+  return `
+  <section class="card hero">
+    <span class="eyebrow">${w>=1&&w<=SERIES.weeks?`Week ${w} of ${SERIES.weeks} · ${weekRange(w)}`:'Summer Survivor'}</span>
+    <h1>Hey ${esc(m.name.split(' ')[0])}</h1>
+    ${status}
+  </section>
+  <button class="btn" type="button" id="h-log">Log a session</button>
+  <section class="card">
+    <div class="stats">
+      <div class="stat"><b>${st.total}</b><span>of ${SERIES.teeTarget} sessions</span></div>
+      <div class="stat"><b>${st.weeksHit}</b><span>weeks at 3+</span></div>
+      <div class="stat"><b>${st.points}</b><span>bonus points</span></div>
+    </div>
+    <div class="bar" role="img" aria-label="${st.total} of ${SERIES.teeTarget} sessions"><i style="width:${pct}%"></i></div>
+    <p class="small muted">${st.qualifies?`<b>Survivor Tee unlocked.</b> You have ${st.entries} ${st.entries===1?'entry':'entries'} in the retreat draw.`:st.tee?'<b>27 sessions done!</b> A Silver membership or above is needed for the Tee and the draw. Ask us about upgrading.':st.missed.length?`You missed week ${st.missed.join(', ')}, so the Survivor Tee and the draw are out of reach this time. Keep going: every mission and extra session still earns bonus points.`:`${SERIES.teeTarget-st.total} more sessions for your Survivor Tee and a spot in the retreat draw. Hit 3 every week to get there.`}</p>
+    <p class="small muted">Bonus points: ${st.missionPts} from missions, ${st.extraPts} from extra sessions. ${st.silver?'Each point is an extra entry in the draw.':'Points become draw entries with a Silver membership or above.'}</p>
+  </section>
+  <section class="card">
+    <h3>Your 9 weeks</h3>
+    <div class="weeks">${Array.from({length:SERIES.weeks},(_,i)=>{const n=st.byWeek[i+1];return `<div class="wk ${n>=SERIES.perWeek?'hit':''} ${i+1===w?'now':''}"><div class="dots">${[0,1,2].map(k=>`<div class="dot ${n>k?'on':''}"></div>`).join('')}</div><span class="lbl">W${i+1}</span></div>`;}).join('')}</div>
+  </section>
+  <section class="card">
+    <div class="row" style="justify-content:space-between"><h3>This week's mission</h3>${weekMission?`<span class="pill ${weekMission.status==='approved'?'good':'warn'}">${weekMission.status==='approved'?'Point unlocked':'Waiting for coach'}</span>`:''}</div>
+    <p class="muted">${weekMission?`You sent in <b>${esc(CHALLENGES[m.track][weekMission.idx][0])}</b>.`:'Pick one mission from your board, do it, and upload a photo to unlock your bonus point.'}</p>
+    ${weekMission?'':'<button class="btn secondary" type="button" id="h-mis">Choose this week’s mission</button>'}
+  </section>
+  <p class="small muted" style="text-align:center">${esc(m.name)} · ${m.track==='gym'?'Gym':'Pilates'} program · <button class="linkbtn small" type="button" id="h-out">Sign out</button></p>`;
+}
+function bindHome(){
+  $('#h-log').onclick=()=>setTab('log');
+  const b=$('#h-mis'); if(b) b.onclick=()=>setTab('missions');
+  $('#h-out').onclick=()=>store.signOut();
+}
+
+function logView(){
+  const m=me(), st=statsFor(m.id), t=todayISO();
+  const max=t<lastDay()?t:lastDay(), min=earliestLog();
+  const recent=[...st.ss].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,12);
+  return `
+  <form class="card" id="logf" novalidate>
+    <h2>Log a session</h2>
+    <label>What did you do?<select id="lg-kind">${SESSION_KINDS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select></label>
+    <p class="small muted">Log sessions in the week you do them. Last week's sessions can still be added until Tuesday.</p>
+    <label>When?<input id="lg-date" type="date" value="${max<min?min:max}" min="${min}" max="${max<min?min:max}"></label>
+    <label id="lg-photo-wrap" class="drop" hidden>
+      <span id="lg-photo-lbl">${PROOF_IN_WHATSAPP?'Add a photo (optional)':'Add a photo as proof of your home training'}</span>
+      <input id="lg-photo" type="file" accept="image/*">
+    </label>
+    <img id="lg-prev" class="photo" alt="Your photo" hidden>
+    ${PROOF_IN_WHATSAPP?'<label id="lg-wa-wrap" class="row" style="flex-direction:row;font-weight:500" hidden><input id="lg-wa" type="checkbox" style="width:auto"> I\u2019ve posted proof in the Summer Survivor WhatsApp group</label>':''}
+    <label>Note (optional)<input id="lg-note" placeholder="e.g. Full body AMRAP, 6 rounds"></label>
+    <p class="err" id="lg-err" hidden></p>
+    <button class="btn" type="submit">Save session</button>
+  </form>
+  <section class="card">
+    <h3>Your sessions</h3>
+    ${recent.length?`<div class="list">${recent.map(s=>`<div class="li">${s.photo?`<img class="thumb" src="${s.photo}" alt="">`:''}<div class="grow"><b>${esc((SESSION_KINDS.find(k=>k[0]===s.kind)||['','Session'])[1])}</b><p class="small muted">${nice(s.date)} · week ${weekOf(s.date)}${s.note?' · '+esc(s.note):''}</p></div><button class="linkbtn small" type="button" data-del="${s.id}" aria-label="Remove this session">Remove</button></div>`).join('')}</div>`:'<p class="muted">Nothing logged yet. Your first session will show up here.</p>'}
+  </section>`;
+}
+function bindLog(){
+  let photo='';
+  const kind=$('#lg-kind'), wrap=$('#lg-photo-wrap');
+  const upd=()=>{ const n=SESSION_KINDS.find(k=>k[0]===kind.value)[2]; wrap.hidden=!n; const wa=$('#lg-wa-wrap'); if(wa) wa.hidden=!n; };
+  kind.onchange=upd; upd();
+  $('#lg-photo').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; try{ photo=await readPhoto(f); $('#lg-prev').src=photo; $('#lg-prev').hidden=false; $('#lg-photo-lbl').textContent='Change photo'; }catch(er){ toast(er.message);} };
+  $('#logf').onsubmit=async e=>{
+    e.preventDefault(); const err=$('#lg-err'); err.hidden=true;
+    const date=$('#lg-date').value, needs=SESSION_KINDS.find(k=>k[0]===kind.value)[2];
+    const w=weekOf(date||'');
+    if(!date||w<1||w>SERIES.weeks||date>todayISO()||date<earliestLog()){err.textContent=`Pick a date between ${nice(earliestLog())} and today. Sessions from earlier weeks can't be added now.`;err.hidden=false;return;}
+    if(needs&&PROOF_IN_WHATSAPP&&!$('#lg-wa').checked&&!photo){err.textContent='Home and holiday sessions need proof. Post a photo in the WhatsApp group, then tick the box.';err.hidden=false;return;}
+    if(needs&&!PROOF_IN_WHATSAPP&&!photo){err.textContent='Home and holiday sessions need a photo as proof. Add one above.';err.hidden=false;return;}
+    const sameDay=DB.sessions.filter(s=>s.member===DB.me&&s.date===date).length;
+    if(sameDay>=2){err.textContent='You’ve already logged 2 sessions on that day. Rest counts too!';err.hidden=false;return;}
+    const ok=await act($('#logf button[type=submit]'),()=>store.addSession({date,kind:kind.value,note:$('#lg-note').value.trim(),photo}));
+    if(!ok) return;
+    const st=statsFor(DB.me); render();
+    toast(st.byWeek[w]===SERIES.perWeek?`That’s 3 for week ${w}. Week done!`:st.byWeek[w]>SERIES.perWeek?'Extra session: +1 bonus point!':`Logged. ${st.total} of ${SERIES.teeTarget} sessions.`);
+  };
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    if(b.dataset.confirm){ act(b,()=>store.delSession(b.dataset.del)).then(ok=>{ if(ok){ render(); toast('Session removed'); } }); }
+    else { b.dataset.confirm='1'; b.textContent='Tap to confirm'; b.style.color='var(--bad)'; }
+  });
+}
+
+function missionsView(){
+  const m=me(), list=CHALLENGES[m.track], st=statsFor(m.id), w=curWeek();
+  const byIdx=i=>st.ms.filter(x=>x.idx===i).sort((a,b)=>b.at.localeCompare(a.at))[0];
+  return `
+  <section class="card">
+    <span class="eyebrow">${m.track==='gym'?'Gym':'Pilates'} mission board</span>
+    <h2>${st.missionPts} of 9 missions done</h2>
+    <p class="muted small">Do one mission a week, in any order, and ${PROOF_IN_WHATSAPP?'post a photo in the WhatsApp group':'upload a photo'}. Your point unlocks once your coach checks it. Can't do a mission? Swap it for a full session with your partner and upload a photo of that instead.</p>
+    <div class="board">${list.map(([t],i)=>{const x=byIdx(i);const s=x?x.status:'open';return `<button type="button" class="tile ${s}" data-i="${i}"><span class="n">${i+1}</span><span class="t">${esc(t)}</span><span class="s ${s}">${{open:'To do',pending:'Checking',approved:'+1 point',rejected:'Try again'}[s]}</span></button>`;}).join('')}</div>
+  </section>
+  ${w>=1&&w<=SERIES.weeks?`<p class="small muted" style="text-align:center">Week ${w}: ${st.ms.some(x=>x.week===w&&x.status!=='rejected')?'mission sent in for this week. Next one opens ' + nice(fmtISO(parseD(SERIES.start)+w*7*DAY)) + '.':'your mission for this week is still open.'}</p>`:''}`;
+}
+function bindMissions(){
+  const m=me();
+  document.querySelectorAll('.tile').forEach(b=>b.onclick=()=>openMission(+b.dataset.i));
+  function openMission(i){
+    const [t,d]=CHALLENGES[m.track][i], st=statsFor(m.id), w=curWeek();
+    const x=st.ms.filter(y=>y.idx===i).sort((a,b)=>b.at.localeCompare(a.at))[0];
+    const weekUsed=st.ms.some(y=>y.week===w&&y.status!=='rejected');
+    let body;
+    if(x&&x.status==='approved') body=`<span class="pill good">Point unlocked</span>${x.photo?`<img class="photo" src="${x.photo}" alt="Your mission photo">`:''}`;
+    else if(x&&x.status==='pending') body=`<span class="pill warn">Waiting for your coach to check</span>${x.photo?`<img class="photo" src="${x.photo}" alt="Your mission photo">`:''}`;
+    else if(w<1||w>SERIES.weeks) body=`<p class="muted">Missions open when the series is running.</p>`;
+    else if(weekUsed) body=`<p class="muted">You've already sent in this week's mission. Come back ${nice(fmtISO(parseD(SERIES.start)+w*7*DAY))} for the next one.</p>`;
+    else body=`${x&&x.status==='rejected'?`<span class="pill bad">Coach asked for another go</span>${x.reply?`<p class="small">${esc(x.reply)}</p>`:''}`:''}
+      ${PROOF_IN_WHATSAPP?'<p class="small">Post your photo in the Summer Survivor WhatsApp group, then tell your coach here so they can unlock your point.</p>':''}
+      <label class="drop"><span id="ms-lbl">${PROOF_IN_WHATSAPP?'Add a photo here too (optional)':'Add your photo'}</span><input id="ms-photo" type="file" accept="image/*"></label>
+      <img id="ms-prev" class="photo" alt="Your photo" hidden>
+      <label>Note (optional)<input id="ms-note" placeholder="Where, who with, how it felt"></label>
+      <button class="btn" id="ms-send" type="button" ${PROOF_IN_WHATSAPP?'':'disabled'}>${PROOF_IN_WHATSAPP?`Done! Posted in WhatsApp for week ${w}`:`Send for week ${w}`}</button>`;
+    sheet(`<span class="eyebrow">Mission ${i+1}</span><h2>${esc(t)}</h2><p class="muted">${esc(d)}</p>${body}<button class="btn ghost" type="button" id="ms-close">Close</button>`,(el,close)=>{
+      el.querySelector('#ms-close').onclick=close;
+      const inp=el.querySelector('#ms-photo'); if(!inp) return; let photo='';
+      inp.onchange=async e=>{const f=e.target.files[0]; if(!f) return; try{photo=await readPhoto(f); const p=el.querySelector('#ms-prev'); p.src=photo; p.hidden=false; el.querySelector('#ms-lbl').textContent='Change photo'; el.querySelector('#ms-send').disabled=false;}catch(er){toast(er.message);}};
+      el.querySelector('#ms-send').onclick=async ev=>{ const ok=await act(ev.currentTarget,()=>store.addMission({idx:i,week:w,photo,note:el.querySelector('#ms-note').value.trim()})); if(!ok) return; close(); render(); toast('Sent! Your point unlocks once your coach checks it.'); };
+    });
+  }
+}
+
+function workoutsView(){
+  return `
+  <section class="card">
+    <span class="eyebrow">Away for the holidays?</span>
+    <h2>Holiday workouts</h2>
+    <p class="muted">No gym needed. Camping, the beach or the backyard all work. Each one counts as a session: log it with a photo as proof.</p>
+    ${WORKOUTS.map(([k,t,intro,steps],i)=>`<details class="workout" ${i===0?'open':''}><summary>${t}</summary><div class="inner"><p class="small muted">${intro}</p><ol>${steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol><button class="btn secondary sm" type="button" data-w="${k}">Log this workout</button></div></details>`).join('')}
+  </section>`;
+}
+function bindWorkouts(){ document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{ setTab('log'); $('#lg-kind').value=b.dataset.w; $('#lg-kind').onchange(); }); }
+
+/* ---------------- Coach ---------------- */
+function coachLogin(){
+  if(!DEMO){ if(DB.isCoach){ DB.coach=true; render(); } return; }
+  sheet(`<span class="eyebrow">Coach view</span><h2>Coach login</h2>${DEMO?'<p class="muted small">Preview PIN is 1234. The live app will use a proper coach login.</p>':''}<label>PIN<input id="pin" type="password" inputmode="numeric" autocomplete="off"></label><p class="err" id="pin-err" hidden>That PIN isn't right.</p><button class="btn" type="button" id="pin-go">Open coach view</button>`,(el,close)=>{
+    const go=()=>{ if(el.querySelector('#pin').value===SERIES.coachPin){ DB.coach=true; save(); close(); render(); } else el.querySelector('#pin-err').hidden=false; };
+    el.querySelector('#pin-go').onclick=go; el.querySelector('#pin').onkeydown=e=>{if(e.key==='Enter')go();}; el.querySelector('#pin').focus();
+  });
+}
+let COACH_TAB='approve', DRAW=null;
+function coachView(){
+  const pend=DB.missions.filter(x=>x.status==='pending').sort((a,b)=>a.at.localeCompare(b.at));
+  const rows=DB.members.map(m=>({m,...statsFor(m.id)})).sort((a,b)=>b.total-a.total);
+  const w=curWeek();
+  const qual=rows.filter(r=>r.qualifies);
+  const onTrack=rows.filter(r=>w>=1&&w<=SERIES.weeks&&r.byWeek[w]>=SERIES.perWeek).length;
+  const quiet=rows.filter(r=>w>=1&&w<=SERIES.weeks&&r.byWeek[w]===0);
+  const tabs=[['approve',`To check (${pend.length})`],['members','Members'],['draw','Tee & draw']];
+  let body='';
+  if(COACH_TAB==='approve') body = pend.length?pend.map(x=>{const m=DB.members.find(y=>y.id===x.member)||{name:'Unknown',track:'gym'};return `<section class="card"><div class="row" style="justify-content:space-between"><b>${esc(m.name)}</b><span class="pill info">${m.track==='gym'?'Gym':'Pilates'} · week ${x.week}</span></div><h3>${esc(CHALLENGES[m.track][x.idx][0])}</h3>${x.photo?`<img class="photo" src="${x.photo}" alt="Mission photo from ${esc(m.name)}">`:(PROOF_IN_WHATSAPP?'<p class="muted small">Proof posted in the WhatsApp group. Check it there before approving.</p>':'<p class="muted small">No photo attached.</p>')}${x.note?`<p>“${esc(x.note)}”</p>`:''}<label>Message back (optional)<input id="rp-${x.id}" placeholder="e.g. Love it! or: Need a photo of the timer"></label><div class="seg"><button type="button" data-ok="${x.id}" style="background:var(--good-soft);color:var(--good);border-color:var(--good)">Approve +1</button><button type="button" data-no="${x.id}">Ask to redo</button></div></section>`;}).join(''):`<section class="card"><p class="muted">All caught up. New mission photos will show up here.</p></section>`;
+  if(COACH_TAB==='members') body = `<section class="card"><div class="stats"><div class="stat"><b>${rows.length}</b><span>members</span></div><div class="stat"><b>${onTrack}</b><span>hit 3 this week</span></div><div class="stat"><b>${quiet.length}</b><span>no sessions yet this week</span></div></div>
+    ${quiet.length?`<p class="small"><b>Give these a nudge:</b> ${quiet.map(r=>esc(r.m.name)).join(', ')}</p>`:''}</section>
+    <section class="card"><h3>Everyone</h3><div class="tablewrap"><table><thead><tr><th>Name</th><th>Program</th><th class="num">This wk</th><th class="num">Counted</th><th class="num">Wks 3+</th><th class="num">Points</th><th>Silver+</th><th>Tee</th><th class="num">Entries</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.m.name)}<br><span class="small muted">${esc(r.m.email)}${r.m.phone?' · '+esc(r.m.phone):''}</span></td><td>${r.m.track==='gym'?'Gym':'Pilates'}</td><td class="num">${w>=1&&w<=SERIES.weeks?r.byWeek[w]:'-'}</td><td class="num">${r.total}/${SERIES.teeTarget}</td><td class="num">${r.weeksHit}</td><td class="num">${r.points}${r.pending?` <span class="pill warn">+${r.pending}</span>`:''}</td><td><button type="button" class="linkbtn small" data-silver="${r.m.id}" aria-label="Change Silver status for ${esc(r.m.name)}">${r.silver?'Yes':'No'}</button></td><td>${r.qualifies?'<span class="pill good">Earned</span>':r.tee?'<span class="pill warn">Not Silver</span>':r.missed.length?`<span class="pill bad">Missed wk ${r.missed.join(', ')}</span>`:`<span class="small muted">${SERIES.teeTarget-r.total} to go</span>`}</td><td class="num">${r.entries||'-'}</td></tr>`).join('')}</tbody></table></div>
+    <p class="small muted">Tap Yes or No under Silver+ to correct a member's membership after checking it in Momence.</p>
+    <button class="btn ghost sm" type="button" id="csv">Copy as spreadsheet rows</button></section>`;
+  if(COACH_TAB==='draw') body = `<section class="card"><h3>Survivor Tee and retreat draw</h3><p class="muted small">Members on Silver or above who log ${SERIES.teeTarget} sessions get a Tee and one entry into the draw for ${esc(SERIES.prize)}, plus one extra entry per bonus point.</p>
+    ${qual.length?`<div class="list">${qual.map(r=>`<div class="li"><div class="grow"><b>${esc(r.m.name)}</b><p class="small muted">${r.total} sessions · ${r.points} bonus points</p></div><span class="pill good">${r.entries} ${r.entries===1?'entry':'entries'}</span></div>`).join('')}</div><button class="btn" type="button" id="draw">Draw a winner</button>${DRAW?`<div class="card hero"><span class="eyebrow">Winner</span><h2>${esc(DRAW)}</h2></div>`:''}`:`<p class="muted">Nobody on Silver or above has reached ${SERIES.teeTarget} sessions yet. ${rows.length?`Closest: ${esc(rows[0].m.name)} on ${rows[0].total}.`:''}</p>`}</section>`;
+  return `${DEMO?'<div class="demo">Preview coach view. Members marked “example” are made up so you can see how it works.</div>':''}
+  <section class="card hero"><span class="eyebrow">Coach view · ${w>=1&&w<=SERIES.weeks?`week ${w} of ${SERIES.weeks}`:'Summer Survivor'}</span><h1>Survivor HQ</h1></section>
+  <div class="seg" style="grid-template-columns:repeat(3,1fr)">${tabs.map(([k,l])=>`<button type="button" data-ct="${k}" aria-pressed="${COACH_TAB===k}">${l}</button>`).join('')}</div>
+  ${body}`;
+}
+function bindCoach(){
+  document.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{COACH_TAB=b.dataset.ct;render();});
+  const review=async(b,id,status)=>{ const ok=await act(b,()=>store.review(id,status,($('#rp-'+id)||{}).value||'')); if(!ok) return; render(); toast(status==='approved'?'Approved. Point unlocked.':'Sent back to try again.'); };
+  document.querySelectorAll('[data-ok]').forEach(b=>b.onclick=()=>review(b,b.dataset.ok,'approved'));
+  document.querySelectorAll('[data-no]').forEach(b=>b.onclick=()=>review(b,b.dataset.no,'rejected'));
+  const d=$('#draw'); if(d) d.onclick=()=>{ const tickets=[]; DB.members.forEach(m=>{const s=statsFor(m.id); for(let k=0;k<s.entries;k++) tickets.push(m.name);}); if(tickets.length){ DRAW=tickets[Math.floor(Math.random()*tickets.length)]; render(); } };
+  document.querySelectorAll('[data-silver]').forEach(b=>b.onclick=async()=>{ const m=DB.members.find(x=>x.id===b.dataset.silver); if(!m) return; const ok=await act(b,()=>store.setSilver(m.id,!m.silver)); if(ok) render(); });
+  const c=$('#csv'); if(c) c.onclick=()=>{
+    const lines=[['Name','Email','Mobile','Program','Silver+','Total sessions','Weeks at 3+','Bonus points','Tee','Draw entries'].join('\t')].concat(DB.members.map(m=>{const s=statsFor(m.id);return [m.name,m.email,m.phone,m.track,s.silver?'Yes':'No',s.total,s.weeksHit,s.points,s.qualifies?'Yes':'No',s.entries].join('\t');}));
+    navigator.clipboard.writeText(lines.join('\n')).then(()=>toast('Copied. Paste into a spreadsheet.'),()=>toast('Copy was blocked on this device.'));
+  };
+}
+
+if(DEMO){ load(); render(); }
+else {
+  try{ SB = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey); }
+  catch(e){ $('#app').innerHTML='<section class="card"><h2>Can\u2019t start the app</h2><p class="muted">Check your internet connection and reload.</p></section>'; }
+  DB={members:[],sessions:[],missions:[],me:null,coach:false,isCoach:false};
+  if(SB){
+    SB.auth.onAuthStateChange(ev=>{ if(ev==='PASSWORD_RECOVERY') setTimeout(()=>sheet(`<span class="eyebrow">Reset password</span><h2>Choose a new password</h2><label>New password<input id="np" type="password" autocomplete="new-password" placeholder="At least 6 characters"></label><p class="err" id="np-err" hidden></p><button class="btn" type="button" id="np-go">Save password</button>`,(el,close)=>{
+      el.querySelector('#np-go').onclick=async()=>{ const pw=el.querySelector('#np').value; const er=el.querySelector('#np-err'); if(pw.length<6){er.textContent='Passwords need at least 6 characters.';er.hidden=false;return;} const {error}=await SB.auth.updateUser({password:pw}); if(error){er.textContent='That didn\u2019t save. Try again.';er.hidden=false;return;} close(); toast('Password saved.'); liveBoot(); };
+    }),0); });
+    liveBoot();
+  }
+}
+</script>
+
+</body></html>
