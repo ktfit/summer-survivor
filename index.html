@@ -168,31 +168,19 @@ const PROOF_IN_WHATSAPP = false; // proof photos are uploaded in the app (and ca
 const DEMO = !CONFIG.supabaseUrl;
 const DEMO_TODAY = '2026-12-16';// preview pretends it is week 3
 
-const CHALLENGES = {
-  // Missions 1 to 9, any order, one a week. Same numbering as the challenge cards.
-  gym: [
-    ['Bring a friend to a class','Bring a friend along to any class. Photo of you both.'],
-    ['100 burpees','All in one day. Split them up however you like.'],
-    ['30-minute beach walk then a swim','Walk the sand for 30 minutes, then cool off with a swim. Snap the view or a sandy selfie.'],
-    ['100 sit-ups','All in one day. Split them up however you like.'],
-    ['Swim 1 full lap of the shark nets','One full lap of the netted swim enclosure.'],
-    ['100 push-ups','All in one day. Knees are fine.'],
-    ['100 squats or lunges','All in one day. Split them up however you like.'],
-    ['Hold a 2-minute plank','One unbroken 2:00 plank. Photo of you or the timer.'],
-    ['Try a new class','Pick a class you haven\u2019t done before.']
-  ],
-  pilates: [
-    ['Bring a friend to a class','Bring a friend along to any class. Photo of you both.'],
-    ['Perform \u201cHundreds\u201d in a class','Do the Hundreds in one of your classes. Ask your instructor or a classmate to snap a photo.'],
-    ['30-minute beach walk then a swim','Walk the sand for 30 minutes, then cool off with a swim. Snap the view or a sandy selfie.'],
-    ['10 Teasers','10 controlled Teasers. Get someone to snap you at the top.'],
-    ['Swim 1 full lap of the shark nets','One full lap of the netted swim enclosure.'],
-    ['100 ab prep crunches','All in one day. Split them up however you like.'],
-    ['100 squats or lunges','All in one day. Split them up however you like.'],
-    ['Hold a 2-minute plank','One unbroken 2:00 plank. Photo of you or the timer.'],
-    ['Try a new class','Pick a class you haven\u2019t done before.']
-  ]
-};
+const MISSIONS = [
+  // Missions 1 to 9, any order, one a week. Same numbering as the challenge cards. Gym and Pilates options on one board.
+  ['Bring a friend to a class','Bring a friend along to any class. Photo of you both.'],
+  ['100 burpees or \u201cHundreds\u201d in a class','Gym: 100 burpees in one day, split up however you like. Pilates: do the Hundreds in one of your classes.'],
+  ['30-minute beach walk then a swim','Walk the sand for 30 minutes, then cool off with a swim. Snap the view or a sandy selfie.'],
+  ['100 sit-ups or 10 Teasers','Gym: 100 sit-ups in one day. Pilates: 10 controlled Teasers. Get someone to snap you.'],
+  ['Swim 1 full lap of the shark nets','One full lap of the netted swim enclosure.'],
+  ['100 push-ups or 100 ab prep crunches','All in one day. Split them up however you like. Knees are fine for push-ups.'],
+  ['100 squats or lunges','All in one day. Split them up however you like.'],
+  ['Hold a 2-minute plank','One unbroken 2:00 plank. Photo of you or the timer.'],
+  ['Try a new class','Pick a class you haven\u2019t done before.']
+];
+const CHALLENGES = { gym: MISSIONS, pilates: MISSIONS }; // every membership includes gym and Pilates
 
 const SESSION_KINDS = [
   ['studio','Class at the studio',false],
@@ -410,8 +398,6 @@ function signupView(){
     <label>Your name<input id="su-name" autocomplete="name" required placeholder="First and last name"></label>
     ${DEMO?'<label>Email<input id="su-email" type="email" autocomplete="email" required placeholder="you@email.com"></label>':`<p class="small muted">Signed in as ${esc(AUTH_EMAIL)}</p>`}
     <label>Mobile<input id="su-phone" type="tel" autocomplete="tel" placeholder="04xx xxx xxx"></label>
-    <div><p style="font-weight:600;font-size:.9rem;margin-bottom:6px">Which program?</p>
-      <div class="seg" id="su-track"><button type="button" data-v="gym" aria-pressed="true">Gym</button><button type="button" data-v="pilates" aria-pressed="false">Pilates</button></div></div>
     <label>Your membership<select id="su-mem"><option value="">Choose one</option><option value="silver">Silver or above</option><option value="other">Below Silver / not sure</option></select></label>
     <p class="small muted">You need a Silver membership or above to win the Tee and enter the prize draw. Anyone can still join in and track their training.</p>
     <p class="err" id="su-err" hidden></p>
@@ -421,7 +407,6 @@ function signupView(){
 }
 function bindSignup(){
   let track='gym';
-  document.querySelectorAll('#su-track button').forEach(b=>b.onclick=()=>{track=b.dataset.v;document.querySelectorAll('#su-track button').forEach(x=>x.setAttribute('aria-pressed',x===b));});
   $('#signup').onsubmit=async e=>{
     e.preventDefault();
     const name=$('#su-name').value.trim(), email=DEMO?$('#su-email').value.trim().toLowerCase():AUTH_EMAIL, phone=$('#su-phone').value.trim(), err=$('#su-err');
@@ -518,7 +503,7 @@ function homeView(){
     <p class="muted">${weekMission?`You sent in <b>${esc(CHALLENGES[m.track][weekMission.idx][0])}</b>.`:'Pick one mission from your board, do it, and upload a photo to unlock your bonus point.'}</p>
     ${weekMission?'':'<button class="btn secondary" type="button" id="h-mis">Choose this week’s mission</button>'}
   </section>
-  <p class="small muted" style="text-align:center">${esc(m.name)} · ${m.track==='gym'?'Gym':'Pilates'} program · <button class="linkbtn small" type="button" id="h-out">Sign out</button></p>`;
+  <p class="small muted" style="text-align:center">${esc(m.name)} · <button class="linkbtn small" type="button" id="h-out">Sign out</button></p>`;
 }
 function bindHome(){
   $('#h-log').onclick=()=>setTab('log');
@@ -582,7 +567,7 @@ function missionsView(){
   const byIdx=i=>st.ms.filter(x=>x.idx===i).sort((a,b)=>b.at.localeCompare(a.at))[0];
   return `
   <section class="card">
-    <span class="eyebrow">${m.track==='gym'?'Gym':'Pilates'} mission board</span>
+    <span class="eyebrow">Mission board</span>
     <h2>${st.missionPts} of 9 missions done</h2>
     <p class="muted small">Do one mission a week, in any order, and ${PROOF_IN_WHATSAPP?'post a photo in the WhatsApp group':'upload a photo'}. Your point unlocks once your coach checks it. Can't do a mission? Swap it for a full session with your partner and upload a photo of that instead.</p>
     <div class="board">${list.map(([t],i)=>{const x=byIdx(i);const s=x?x.status:'open';return `<button type="button" class="tile ${s}" data-i="${i}"><span class="n">${i+1}</span><span class="t">${esc(t)}</span><span class="s ${s}">${{open:'To do',pending:'Checking',approved:'+1 point',rejected:'Try again'}[s]}</span></button>`;}).join('')}</div>
@@ -645,10 +630,10 @@ function coachView(){
   const quiet=rows.filter(r=>w>=1&&w<=SERIES.weeks&&r.byWeek[w]===0);
   const tabs=[['approve',`To check (${pend.length})`],['members','Members'],['draw','Tee & draw']];
   let body='';
-  if(COACH_TAB==='approve') body = pend.length?pend.map(x=>{const m=DB.members.find(y=>y.id===x.member)||{name:'Unknown',track:'gym'};return `<section class="card"><div class="row" style="justify-content:space-between"><b>${esc(m.name)}</b><span class="pill info">${m.track==='gym'?'Gym':'Pilates'} · week ${x.week}</span></div><h3>${esc(CHALLENGES[m.track][x.idx][0])}</h3>${x.photo?`<img class="photo" src="${x.photo}" alt="Mission photo from ${esc(m.name)}">`:(PROOF_IN_WHATSAPP?'<p class="muted small">Proof posted in the WhatsApp group. Check it there before approving.</p>':'<p class="muted small">No photo attached.</p>')}${x.note?`<p>“${esc(x.note)}”</p>`:''}<label>Message back (optional)<input id="rp-${x.id}" placeholder="e.g. Love it! or: Need a photo of the timer"></label><div class="seg"><button type="button" data-ok="${x.id}" style="background:var(--good-soft);color:var(--good);border-color:var(--good)">Approve +1</button><button type="button" data-no="${x.id}">Ask to redo</button></div></section>`;}).join(''):`<section class="card"><p class="muted">All caught up. New mission photos will show up here.</p></section>`;
+  if(COACH_TAB==='approve') body = pend.length?pend.map(x=>{const m=DB.members.find(y=>y.id===x.member)||{name:'Unknown',track:'gym'};return `<section class="card"><div class="row" style="justify-content:space-between"><b>${esc(m.name)}</b><span class="pill info">Week ${x.week}</span></div><h3>${esc(CHALLENGES[m.track][x.idx][0])}</h3>${x.photo?`<img class="photo" src="${x.photo}" alt="Mission photo from ${esc(m.name)}">`:(PROOF_IN_WHATSAPP?'<p class="muted small">Proof posted in the WhatsApp group. Check it there before approving.</p>':'<p class="muted small">No photo attached.</p>')}${x.note?`<p>“${esc(x.note)}”</p>`:''}<label>Message back (optional)<input id="rp-${x.id}" placeholder="e.g. Love it! or: Need a photo of the timer"></label><div class="seg"><button type="button" data-ok="${x.id}" style="background:var(--good-soft);color:var(--good);border-color:var(--good)">Approve +1</button><button type="button" data-no="${x.id}">Ask to redo</button></div></section>`;}).join(''):`<section class="card"><p class="muted">All caught up. New mission photos will show up here.</p></section>`;
   if(COACH_TAB==='members') body = `<section class="card"><div class="stats"><div class="stat"><b>${rows.length}</b><span>members</span></div><div class="stat"><b>${onTrack}</b><span>hit 3 this week</span></div><div class="stat"><b>${quiet.length}</b><span>no sessions yet this week</span></div></div>
     ${quiet.length?`<p class="small"><b>Give these a nudge:</b> ${quiet.map(r=>esc(r.m.name)).join(', ')}</p>`:''}</section>
-    <section class="card"><h3>Everyone</h3><div class="tablewrap"><table><thead><tr><th>Name</th><th>Program</th><th class="num">This wk</th><th class="num">Counted</th><th class="num">Wks 3+</th><th class="num">Points</th><th>Silver+</th><th>Tee</th><th class="num">Entries</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.m.name)}<br><span class="small muted">${esc(r.m.email)}${r.m.phone?' · '+esc(r.m.phone):''}</span></td><td>${r.m.track==='gym'?'Gym':'Pilates'}</td><td class="num">${w>=1&&w<=SERIES.weeks?r.byWeek[w]:'-'}</td><td class="num">${r.total}/${SERIES.teeTarget}</td><td class="num">${r.weeksHit}</td><td class="num">${r.points}${r.pending?` <span class="pill warn">+${r.pending}</span>`:''}</td><td><button type="button" class="linkbtn small" data-silver="${r.m.id}" aria-label="Change Silver status for ${esc(r.m.name)}">${r.silver?'Yes':'No'}</button></td><td>${r.qualifies?'<span class="pill good">Earned</span>':r.tee?'<span class="pill warn">Not Silver</span>':r.missed.length?`<span class="pill bad">Missed wk ${r.missed.join(', ')}</span>`:`<span class="small muted">${SERIES.teeTarget-r.total} to go</span>`}</td><td class="num">${r.entries||'-'}</td></tr>`).join('')}</tbody></table></div>
+    <section class="card"><h3>Everyone</h3><div class="tablewrap"><table><thead><tr><th>Name</th><th class="num">This wk</th><th class="num">Counted</th><th class="num">Wks 3+</th><th class="num">Points</th><th>Silver+</th><th>Tee</th><th class="num">Entries</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.m.name)}<br><span class="small muted">${esc(r.m.email)}${r.m.phone?' · '+esc(r.m.phone):''}</span></td><td class="num">${w>=1&&w<=SERIES.weeks?r.byWeek[w]:'-'}</td><td class="num">${r.total}/${SERIES.teeTarget}</td><td class="num">${r.weeksHit}</td><td class="num">${r.points}${r.pending?` <span class="pill warn">+${r.pending}</span>`:''}</td><td><button type="button" class="linkbtn small" data-silver="${r.m.id}" aria-label="Change Silver status for ${esc(r.m.name)}">${r.silver?'Yes':'No'}</button></td><td>${r.qualifies?'<span class="pill good">Earned</span>':r.tee?'<span class="pill warn">Not Silver</span>':r.missed.length?`<span class="pill bad">Missed wk ${r.missed.join(', ')}</span>`:`<span class="small muted">${SERIES.teeTarget-r.total} to go</span>`}</td><td class="num">${r.entries||'-'}</td></tr>`).join('')}</tbody></table></div>
     <p class="small muted">Tap Yes or No under Silver+ to correct a member's membership after checking it in Momence.</p>
     <button class="btn ghost sm" type="button" id="csv">Copy as spreadsheet rows</button></section>`;
   if(COACH_TAB==='draw') body = `<section class="card"><h3>Survivor Tee and retreat draw</h3><p class="muted small">Members on Silver or above who log ${SERIES.teeTarget} sessions get a Tee and one entry into the draw for ${esc(SERIES.prize)}, plus one extra entry per bonus point.</p>
@@ -666,7 +651,7 @@ function bindCoach(){
   const d=$('#draw'); if(d) d.onclick=()=>{ const tickets=[]; DB.members.forEach(m=>{const s=statsFor(m.id); for(let k=0;k<s.entries;k++) tickets.push(m.name);}); if(tickets.length){ DRAW=tickets[Math.floor(Math.random()*tickets.length)]; render(); } };
   document.querySelectorAll('[data-silver]').forEach(b=>b.onclick=async()=>{ const m=DB.members.find(x=>x.id===b.dataset.silver); if(!m) return; const ok=await act(b,()=>store.setSilver(m.id,!m.silver)); if(ok) render(); });
   const c=$('#csv'); if(c) c.onclick=()=>{
-    const lines=[['Name','Email','Mobile','Program','Silver+','Total sessions','Weeks at 3+','Bonus points','Tee','Draw entries'].join('\t')].concat(DB.members.map(m=>{const s=statsFor(m.id);return [m.name,m.email,m.phone,m.track,s.silver?'Yes':'No',s.total,s.weeksHit,s.points,s.qualifies?'Yes':'No',s.entries].join('\t');}));
+    const lines=[['Name','Email','Mobile','Silver+','Total sessions','Weeks at 3+','Bonus points','Tee','Draw entries'].join('\t')].concat(DB.members.map(m=>{const s=statsFor(m.id);return [m.name,m.email,m.phone,s.silver?'Yes':'No',s.total,s.weeksHit,s.points,s.qualifies?'Yes':'No',s.entries].join('\t');}));
     navigator.clipboard.writeText(lines.join('\n')).then(()=>toast('Copied. Paste into a spreadsheet.'),()=>toast('Copy was blocked on this device.'));
   };
 }
