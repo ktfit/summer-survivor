@@ -389,8 +389,8 @@ function signupView(){
     <h2>What's involved</h2>
     <div class="list">
       <div class="li"><div class="grow"><b>3 sessions every week</b><p class="muted small">Studio classes, online classes or our holiday workouts while you're away. Sessions don't roll over to the next week. Can't make class? Do a home workout that week instead.</p></div></div>
-      <div class="li"><div class="grow"><b>Bonus points</b><p class="muted small">Earn 1 point for each weekly mission you upload, and 1 point for every session over 3 in a week.</p></div></div>
-      <div class="li"><div class="grow"><b>27 sessions = Survivor Tee</b><p class="muted small">Plus an entry into the draw for ${esc(SERIES.prize)}. Every bonus point is an extra entry. Silver membership or above needed to qualify.</p></div></div>
+      <div class="li"><div class="grow"><b>Extra entries in the draw</b><p class="muted small">Every weekly mission you complete = 1 extra entry. Every class over 3 in a week = 1 extra entry. The more you do, the better your chances.</p></div></div>
+      <div class="li"><div class="grow"><b>27 sessions = Survivor Tee</b><p class="muted small">Plus your first entry into the draw for ${esc(SERIES.prize)}, with all your extra entries on top. Silver membership or above needed to qualify.</p></div></div>
     </div>
   </section>
   <form class="card" id="signup" novalidate>
@@ -492,7 +492,7 @@ function homeView(){
     </div>
     <div class="bar" role="img" aria-label="${st.total} of ${SERIES.teeTarget} sessions"><i style="width:${pct}%"></i></div>
     <p class="small muted">${st.qualifies?`<b>Survivor Tee unlocked.</b> You have ${st.entries} ${st.entries===1?'entry':'entries'} in the retreat draw.`:st.tee?'<b>27 sessions done!</b> A Silver membership or above is needed for the Tee and the draw. Ask us about upgrading.':st.missed.length?`You missed week ${st.missed.join(', ')}, so the Survivor Tee and the draw are out of reach this time. Keep going: every mission and extra session still earns bonus points.`:`${SERIES.teeTarget-st.total} more sessions for your Survivor Tee and a spot in the retreat draw. Hit 3 every week to get there.`}</p>
-    <p class="small muted">Bonus points: ${st.missionPts} from missions, ${st.extraPts} from extra sessions. ${st.silver?'Each point is an extra entry in the draw.':'Points become draw entries with a Silver membership or above.'}</p>
+    <p class="small muted">Extra draw entries: ${st.missionPts} from missions, ${st.extraPts} from extra classes. ${st.silver?'Each mission and each class over 3 in a week adds 1 more entry.':'These become draw entries with a Silver membership or above.'}</p>
   </section>
   <section class="card">
     <h3>Your 9 weeks</h3>
